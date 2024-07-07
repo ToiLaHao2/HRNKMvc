@@ -1,0 +1,54 @@
+﻿@model hrnk.Models.Role
+@using Newtonsoft.Json;
+@{
+    ViewData["Title"] = "Delete";
+}
+@{
+    try
+    {
+        User user = JsonConvert.DeserializeObject<User>(@Context.Session.GetString("UserData"));
+        string ready = Context.Session.GetString("UserReady").ToString();
+        if (ready.Equals("ready") && user.UserRole.Equals("88510eb8-8a92-4545-8d68-3620dd0b17ff"))
+        {
+            <div class="text-center my-5">
+                <h1 class="text-3xl font-bold">Delete</h1>
+                <h4 class="text-2xl font-bold">Are you sure you want to delete this?</h4>
+                <h4 class="text-xl font-semibold mt-4">Role</h4>
+            </div>
+            <hr />
+            <div class="pt-10 pb-10 w-3/4 mx-auto place-content-center text-center">
+                <span class="font-semibold">Role Name </span>: @Html.DisplayFor(model => model.RoleName)
+                <div class="py-5">
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="RoleId" />
+                        <input type="submit" value="Delete" onclick="return confirmDelete();" class="w-32 bg-black text-white py-1 hover:shadow-xl hover:font-bold px-4 rounded-lg relative overflow-hidden" /> |
+                        <a asp-action="Index" class="px-2 py-1 text-black border-2 rounded-lg hover:shadow-xl hover:font-bold">Back to List</a>
+                    </form>
+                    <script>
+                        function confirmDelete() {
+                            // Hiển thị cửa sổ xác nhận
+                            if (confirm('Are you sure to delete it? You can revert after this !')) {
+                                return true; // Nếu người dùng chọn OK, submit form
+                            } else {
+                                return false; // Nếu người dùng chọn Cancel, không submit form
+                            }
+                        }
+                    </script>
+                </div>
+            </div>
+        }
+        else
+        {
+            <script>
+                window.location.href = '@Url.Action("AccessDenined", "Error")';
+            </script>
+        }
+
+    }
+    catch (Exception ex)
+    {
+        <script>
+            window.location.href = '@Url.Action("AccessDenined", "Error")';
+        </script>
+    }
+}

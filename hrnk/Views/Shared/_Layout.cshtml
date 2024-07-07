@@ -1,0 +1,97 @@
+﻿@using Newtonsoft.Json;
+@{
+    User user = null;
+    string ready = "false";
+    if (Context.Session.GetString("UserReady") != null && Context.Session.GetString("UserReady").Equals("ready"))
+    {
+        user = JsonConvert.DeserializeObject<User>(Context.Session.GetString("UserData"));
+        ready = "true";
+    }
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - hrnk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        clifford: '#da373d',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <header>
+        <div class="flex bg-white border-b border-gray-200 shadow-md py-2 w-full">
+            <div class="w-1/12 place-content-center p-3">
+                <a class="text-center text-xl font-bold" asp-area="" asp-controller="Home" asp-action="Index">HRNK</a>
+            </div>
+            <div class="flex items-center justify-between w-11/12 py-2">
+                <div class="flex w-4/5 place-content-start">
+                    <div class="flex">
+                        <div class="flex items-center p-1 font-sans text-sm antialiased font-medium leading-normal gap-x-2 text-blue-gray-900 mx-1">
+                            <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </div>
+                        <div class="flex items-center p-1 font-sans text-sm antialiased font-medium leading-normal gap-x-2 text-blue-gray-900 mx-1">
+                            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </div>
+                        @if (ready.Equals("true") && user.UserRole.Equals("88510eb8-8a92-4545-8d68-3620dd0b17ff"))
+                        {
+                            <div class="flex items-center p-1 font-sans text-sm antialiased font-medium leading-normal gap-x-2 text-blue-gray-900 mx-1">
+                                <a asp-area="" asp-controller="Users" asp-action="Index">Users</a>
+                            </div>
+                            <div class="flex items-center p-1 font-sans text-sm antialiased font-medium leading-normal gap-x-2 text-blue-gray-900 mx-1">
+                                <a asp-area="" asp-controller="Roles" asp-action="Index">Roles</a>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+                <div class="flex w-1/5 place-content-end pr-10">
+                    @if (ready.Equals("true"))
+                    {
+                        <div class="flex">
+                            <div class="hidden select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block ">
+                                <a asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@user.UserId">Hello, @user.UserAccountName</a>
+                            </div>
+                            <div class="mx-2 hidden px-4 py-2 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block">
+                                <a asp-area="" asp-controller="Auth" asp-action="Logout">Log out</a>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex">
+                            <div class="mx-2 hidden px-4 py-2 font-sans text-xs font-bold text-center text-gray-900 uppercase align-middle transition-all rounded-lg select-none hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block">
+                                <a asp-area="" asp-controller="Auth" asp-action="UserLogin">Login</a>
+                            </div>
+                            <div class="hidden select-none rounded-lg bg-gradient-to-tr from-gray-900 to-gray-800 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none lg:inline-block ">
+                                <a asp-area="" asp-controller="Auth" asp-action="Register">Register</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="h-screen">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+    <footer class="border-2 py-2 px-4 position-relative">
+        <div class="container">
+            &copy; 2024 - hrnk - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

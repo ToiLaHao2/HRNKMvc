@@ -1,0 +1,81 @@
+﻿@model User
+@using Newtonsoft.Json;
+@{
+    ViewData["Title"] = "Details";
+    List<Role> Roles = ViewBag.Roles;
+    List<User> Users = ViewBag.Users;
+}
+@{
+    try
+    {
+        User user = JsonConvert.DeserializeObject<User>(@Context.Session.GetString("UserData"));
+        string ready = Context.Session.GetString("UserReady").ToString();
+        if (ready.Equals("ready") && user.UserRole.Equals("88510eb8-8a92-4545-8d68-3620dd0b17ff"))
+        {
+            <div class="w-2/4 mr-auto ml-auto pt-10">
+                <h1 class="text-3xl font-bold text-center">Details</h1>
+
+                <div class="mt-5">
+                    <h4 class="text-xl font-bold text-center mb-3">User</h4>
+                    <hr />
+                    <div class="w-3/4 mx-auto border-2 border-gray-200 rounded-lg p-6">
+                        <div class="flex p-2">
+                            <div class="w-2/4 font-bold">User Account Name :</div>
+                            <div class="w-2/4 border-b-2 border-gray-300">@Html.DisplayFor(model => model.UserAccountName)</div>
+                        </div>
+                        <div class="flex p-2">
+                            <div class="w-2/4 font-bold">User Role :</div>
+                            <div class="w-2/4 border-b-2 border-gray-300">
+                                @foreach (Role role in Roles)
+                                {
+                                    if (role.RoleId.Equals(Model.UserRole))
+                                    {
+                                        @role.RoleName
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="flex p-2">
+                            <div class="w-2/4 font-bold">Created At :</div>
+                            <div class="w-2/4 border-b-2 border-gray-300">@Html.DisplayFor(model => model.CreatedAt)</div>
+                        </div>
+                        <div class="flex p-2">
+                            <div class="w-2/4 font-bold">Updated At :</div>
+                            <div class="w-2/4 border-b-2 border-gray-300">@Html.DisplayFor(model => model.UpdatedAt)</div>
+                        </div>
+                        <div class="flex p-2">
+                            <div class="w-2/4 font-bold">Updated By :</div>
+                            <div class="w-2/4 border-b-2 border-gray-300">
+                                @foreach (User userTemp in Users)
+                                {
+                                    if (userTemp.UserId.Equals(Model.UpdatedBy))
+                                    {
+                                        @userTemp.UserAccountName
+                                        ;
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="flex w-2/4 mx-auto place-content-center py-2 mt-5 gap-x-4">
+                            <a asp-action="Edit" asp-route-id="@Model?.UserId" class="flex select-none items-center gap-3 rounded-lg bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">Edit</a>
+                            <a asp-action="Index" class="flex select-none items-center gap-3 rounded-lg bg-gray-200 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-black shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none">Back to List</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <script>
+                window.location.href = '@Url.Action("AccessDenined", "Error")';
+            </script>
+        }
+
+    }
+    catch (Exception ex)
+    {
+        <script>
+            window.location.href = '@Url.Action("AccessDenined", "Error")';
+        </script>
+    }
+}

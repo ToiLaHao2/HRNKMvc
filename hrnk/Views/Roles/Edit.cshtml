@@ -1,0 +1,52 @@
+﻿@model hrnk.Models.Role
+@using Newtonsoft.Json;
+@{
+    ViewData["Title"] = "Edit";
+}
+@{
+    try
+    {
+        User user = JsonConvert.DeserializeObject<User>(@Context.Session.GetString("UserData"));
+        string ready = Context.Session.GetString("UserReady").ToString();
+        if (ready.Equals("ready") && user.UserRole.Equals("88510eb8-8a92-4545-8d68-3620dd0b17ff"))
+        {
+            <div class="text-center my-5">
+                <h1 class="text-3xl font-bold">Edit</h1>
+                <h4 class="text-xl font-bold">Role</h4>
+            </div>
+            <hr />
+            <div class="pt-10 pb-10 w-3/4 mx-auto">
+                <form asp-action="Edit" class="border-2 w-2/5 mx-auto px-4 py-10 rounded-lg">
+                    <div asp-validation-summary="All" class="text-red-500"></div>
+                    <input type="hidden" asp-for="RoleId" />
+                    <div class="flex place-content-between items-center">
+                        <label asp-for="RoleName" class="w-2/4"></label>
+                        <input asp-for="RoleName" class="w-2/4 border-2 border-gray-300 p-1 rounded-lg" />
+                    </div>
+                    <div class="flex place-content-between mt-5">
+                        <input type="submit" value="Create" class="w-32 bg-black text-white py-1 hover:shadow-xl hover:font-bold px-4 rounded-lg relative overflow-hidden" />
+                        <a asp-action="Index" class="px-2 py-1 text-black border-2 rounded-lg hover:shadow-xl hover:font-bold">Back to List</a>
+                    </div>
+                </form>
+            </div>
+        }
+        else
+        {
+            <script>
+                window.location.href = '@Url.Action("AccessDenined", "Error")';
+            </script>
+        }
+
+    }
+    catch (Exception ex)
+    {
+        <script>
+            window.location.href = '@Url.Action("AccessDenined", "Error")';
+        </script>
+    }
+}
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

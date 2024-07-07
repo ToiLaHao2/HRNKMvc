@@ -1,0 +1,113 @@
+﻿@model hrnk.Models.AdminModel.Request.CreateUserRequest
+@using Newtonsoft.Json;
+@{
+    ViewData["Title"] = "Create User";
+    List<Role> Roles = ViewBag.Roles;
+}
+@{
+    try
+    {
+        User user = JsonConvert.DeserializeObject<User>(@Context.Session.GetString("UserData"));
+        string ready = Context.Session.GetString("UserReady").ToString();
+        if (ready.Equals("ready") && user.UserRole.Equals("88510eb8-8a92-4545-8d68-3620dd0b17ff"))
+        {
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="utf-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>@ViewData["Title"] - hrnk</title>
+                <script src="https://cdn.tailwindcss.com"></script>
+                <script>
+                    function togglePasswordVisibility() {
+                        var checkbox = document.getElementById("showPasswordCheckbox");
+                        var passwordInput = document.getElementById("passwordInput");
+
+                        if (checkbox.checked) {
+                            passwordInput.type = "text";
+                        } else {
+                            passwordInput.type = "password";
+                        }
+                    }
+                    function redirectToRegister() {
+                        window.location.href = '/Auth/Register'; // Đường dẫn đến trang login của bạn
+                    }
+                </script>
+            </head>
+            <body>
+                <div class="h-screen">
+                    <div class="w-2/4 mr-auto ml-auto pt-10">
+                        <div class="text-center">
+                            <h1 class="text-3xl font-bold">Create</h1>
+                            <h4 class="text-xl font-bold">User</h4>
+                        </div>
+                        <hr />
+                        <div class="pt-10 pb-10 w-3/4 mr-auto ml-auto">
+                            <form asp-action="Create">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="p-2">
+                                    <div class="flex place-content-between">
+                                        <label asp-for="UserAccountName" class="w-2/4">User Account Name :</label>
+                                        <input asp-for="UserAccountName" class="w-2/4 border-2 border-gray-300 p-1" />
+                                    </div>
+                                    <span asp-validation-for="UserAccountName" class="text-danger"></span>
+                                </div>
+                                <div class="p-2">
+                                    <div class="flex place-content-between">
+                                        <label asp-for="Password" class="w-2/4">Password :</label>
+                                        <input asp-for="Password" class="w-2/4 border-2 border-gray-300 p-1" />
+                                    </div>
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                                <div class="p-2">
+                                    <div class="flex place-content-between">
+                                        <label asp-for="ConfirmPassword" class="w-2/4">Confirm Password : </label>
+                                        <input asp-for="ConfirmPassword" class="w-2/4 border-2 border-gray-300 p-1" />
+                                    </div>
+                                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                                </div>
+                                <div class="p-2">
+                                    <div class="flex place-content-between">
+                                        <label asp-for="UserRole" class="">
+                                        </label>
+                                        <select asp-for="UserRole" class="peer w-2/4 rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-3 py-2.5 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50">
+                                            @foreach (var role in Roles)
+                                            {
+                                                <option value="@role.RoleId">@role.RoleName</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="UserRole" class="text-danger"></span>
+                                </div>
+                                <div class="p-2 text-right mt-2">
+                                    <input type="submit" value="Create" class="w-32 bg-black text-white py-1 hover:shadow-xl hover:font-bold py-2 px-4 rounded-lg relative overflow-hidden" />
+                                    <input type="reset" value="Clear" class="w-32 text-black py-1 hover:shadow-xl hover:font-bold bg-gray-200 py-2 px-4 rounded-lg relative overflow-hidden" />
+                                    <a asp-action="Index" class="px-2 py-1 text-black border-2 rounded-lg hover:shadow-xl hover:font-bold">Back to List</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </body>
+            </html>
+        }
+        else
+        {
+            <script>
+                window.location.href = '@Url.Action("AccessDenined", "Error")';
+            </script>
+        }
+
+    }
+    catch (Exception ex)
+    {
+        <script>
+            window.location.href = '@Url.Action("AccessDenined", "Error")';
+        </script>
+    }
+}
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,75 @@
+﻿@model User
+@using Newtonsoft.Json;
+@{
+    ViewData["Title"] = "Edit";
+    List<Role> Roles = ViewBag.Roles;
+}
+@{
+    try
+    {
+        User user = JsonConvert.DeserializeObject<User>(@Context.Session.GetString("UserData"));
+        string ready = Context.Session.GetString("UserReady").ToString();
+        if (ready.Equals("ready") && user.UserRole.Equals("88510eb8-8a92-4545-8d68-3620dd0b17ff"))
+        {
+            <div class="w-full h-full p-5">
+                <div class="text-left">
+                    <a asp-action="Index" class="bg-gray-200 p-2 text-black font-semibold rounded-lg hover:shadow-2xl">Back to List</a>
+                </div>
+                <h1 class="text-3xl font-bold text-center">Edit</h1>
+
+                <h4 class="text-xl font-bold text-center">User</h4>
+                <hr class="m-5" />
+                <div class="w-2/6 mx-auto p-5 border-2 border-slate-300 rounded-lg">
+                    <form asp-action="Edit">
+                        <div asp-validation-summary="ModelOnly" class="pl-2 font-xl text-rose-500"></div>
+                        <div class="gap-4">
+                            <input type="hidden" asp-for="UserId" />
+                            <div>
+                                <div class="flex place-content-between items-center p-1">
+                                    <label asp-for="UserAccountName" class="w-2/4 font-semibold">User Account Name :</label>
+                                    <input asp-for="UserAccountName" class="w-2/4 p-1 border-gray-200 border-2 rounded-lg" />
+                                </div>
+                                <span asp-validation-for="UserAccountName" class="pl-2 font-xl text-rose-500"></span>
+                            </div>
+                            <div>
+                                <div class="flex place-content-between items-center p-1">
+                                    <label asp-for="UserRole" class="font-semibold">
+                                        User Role
+                                    </label>
+                                    <select asp-for="UserRole" class="peer w-2/4 rounded-[7px] border border-blue-gray-200 border-t-transparent bg-transparent px-2 py-1 font-sans text-sm font-normal text-blue-gray-700 border-gray-200 transition-all placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 empty:!bg-gray-900 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50">
+                                        @foreach (var role in Roles)
+                                        {
+                                            <option value="@role.RoleId">@role.RoleName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <span asp-validation-for="UserRole" class="pl-2 font-xl text-rose-500"></span>
+                            </div>
+                            <div class="text-center p-2">
+                                <input type="submit" value="Save" class="py-1 px-10 w-fit rounded-xl bg-black text-white font-semibold active:scale-[.98] active:duration-75 hover:scale-[1.01] hover:font-bold ease-in-out transition-all" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+        else
+        {
+            <script>
+                window.location.href = '@Url.Action("AccessDenined", "Error")';
+            </script>
+        }
+
+    }
+    catch (Exception ex)
+    {
+        <script>
+            window.location.href = '@Url.Action("AccessDenined", "Error")';
+        </script>
+    }
+}
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,140 @@
+﻿@model IEnumerable<User>
+@using Newtonsoft.Json;
+@{
+    ViewData["Title"] = "Index";
+    List<Role> Roles = ViewBag.Roles;
+    List<User> Users = ViewBag.Users;
+}
+@{
+    try
+    {
+        User user = JsonConvert.DeserializeObject<User>(@Context.Session.GetString("UserData"));
+        string ready = Context.Session.GetString("UserReady").ToString();
+        if (ready.Equals("ready") && user.UserRole.Equals("88510eb8-8a92-4545-8d68-3620dd0b17ff"))
+        {
+            <div class="w-[90%] p-10 mx-auto">
+                <h1 class="text-center text-3xl font-bold">USERS</h1>
+                <div class="relative flex flex-col w-full h-full text-gray-700 bg-white shadow-md rounded-xl bg-clip-border">
+                    <div class="relative mx-4 mt-4 overflow-hidden text-gray-700 bg-white rounded-none bg-clip-border">
+                        <div class="flex items-center justify-between gap-8 mb-8">
+                            <div>
+                                <h5 class="block font-sans text-xl antialiased font-semibold leading-snug tracking-normal text-blue-gray-900">
+                                    Account List
+                                </h5>
+                                <p class="block mt-1 font-sans text-base antialiased font-normal leading-relaxed text-gray-700">
+                                    See information about all accounts
+                                </p>
+                            </div>
+                            <div class="flex flex-col gap-2 shrink-0 sm:flex-row">
+                                <a asp-action="Create" class="flex">
+                                    <button class="flex select-none items-center gap-3 rounded-lg bg-gray-900 py-2 px-4 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                            type="button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"
+                                             stroke-width="2" class="w-4 h-4">
+                                            <path d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM19.75 7.5a.75.75 0 00-1.5 0v2.25H16a.75.75 0 000 1.5h2.25v2.25a.75.75 0 001.5 0v-2.25H22a.75.75 0 000-1.5h-2.25V7.5z">
+                                            </path>
+                                        </svg>
+                                        Add member
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <table class="w-full text-left table-auto min-w-max">
+                            <thead>
+                                <tr>
+                                    <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+                                        @Html.DisplayNameFor(model => model.UserAccountName)
+                                    </th>
+                                    <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+                                        @Html.DisplayNameFor(model => model.UserRole)
+                                    </th>
+                                    <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+                                        @Html.DisplayNameFor(model => model.CreatedAt)
+                                    </th>
+                                    <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+                                        @Html.DisplayNameFor(model => model.UpdatedAt)
+                                    </th>
+                                    <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50">
+                                        @Html.DisplayNameFor(model => model.UpdatedBy)
+                                    </th>
+                                    <th class="p-4 border-b border-blue-gray-100 bg-blue-gray-50"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    if (!item.UserId.ToString().Equals(Context.Session.GetString("UserId")))
+                                    {
+                                        <tr>
+                                            <td class="p-2 px-4 border-b border-blue-gray-50">
+                                                @Html.DisplayFor(modelItem => item.UserAccountName)
+                                            </td>
+
+                                            <td class="p-2 px-4 border-b border-blue-gray-50">
+                                                @foreach (Role role in Roles)
+                                                {
+                                                    if (role.RoleId.Equals(item.UserRole))
+                                                    {
+                                                        @role.RoleName
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="p-2 px-4 border-b border-blue-gray-50">
+                                                @Html.DisplayFor(modelItem => item.CreatedAt)
+                                            </td>
+                                            <td class="p-2 px-4 border-b border-blue-gray-50">
+                                                @Html.DisplayFor(modelItem => item.UpdatedAt)
+                                            </td>
+                                            <td class="p-2 px-4 border-b border-blue-gray-50">
+                                                @foreach (User userInList in Users)
+                                                {
+                                                    if (userInList.UserId.Equals(item.UpdatedBy))
+                                                    {
+                                                        @userInList.UserAccountName
+                                                        ;
+                                                    }
+                                                }
+                                            </td>
+                                            <td class="p-2 px-4 border-b border-blue-gray-50 flex">
+                                                <a asp-action="Edit" asp-route-id="@item.UserId" class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none border-r-2 mx-1">
+                                                    <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                                                        <i class="fa-solid fa-pen-to-square"></i>
+                                                    </span>
+                                                </a>
+                                                <a asp-area="" asp-controller="Users" asp-action="Details" asp-route-id="@item.UserId" class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none border-r-2 mx-1">
+                                                    <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                                                        <i class="fa-solid fa-user"></i>
+                                                    </span>
+                                                </a>
+                                                <a asp-action="Delete" asp-route-id="@item.UserId" class="relative h-10 max-h-[40px] w-10 max-w-[40px] select-none rounded-lg text-center align-middle font-sans text-xs font-medium uppercase text-gray-900 transition-all hover:bg-gray-900/10 active:bg-gray-900/20 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none border-r-2 mx-1">
+                                                    <span class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+                                                        <i class="fa-solid fa-trash-can"></i>
+                                                    </span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <script>
+                window.location.href = '@Url.Action("AccessDenined", "Error")';
+            </script>
+        }
+
+    }
+    catch (Exception ex)
+    {
+        <script>
+            window.location.href = '@Url.Action("AccessDenined", "Error")';
+        </script>
+    }
+}
